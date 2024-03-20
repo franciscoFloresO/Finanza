@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ division }} - {{ pais }} - {{ tipo_data }} - {{ anno }} - {{ mes }}
+{% endblock %}
+
+{% block content %}
+<br>
+<div style="justify-items: center;">
+    <h2>Costo Editables</h2>
+    <h3 style="justify-self: center;">{{ division }} - {{ pais }} - {{ tipo_data }} - {{ anno }} - {{ mes }}</h3>  
+</div>
+<br>
+<form method="post" action="{% url 'costos_editar' %}?division={{ division }}&pais={{ pais }}&tipo_dato={{ tipo_data }}&annos={{ anno }}&mes={{ mes }}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Centro Costo</th>
+                    <th scope="col">Pais</th>
+                    <th scope="col">División</th>
+                    <th scope="col">Forecast</th>
+                    <th scope="col">Real</th>
+                    <th scope="col">ID</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {% for costo in costos %}
+                <tr>
+                    <td scope="row">{{ costo.costo_cliente }}</td>
+                    <td>{{ costo.costo_ceco }}</td>
+                    <td>{{ costo.costo_pais }}</td>
+                    <td>{{ costo.costo_division }}</td>
+                    <td>
+                        {% if costo.costo_forecast %}
+                            {{ costo.costo_forecast }}
+                        {% else %}
+                            <input type="number" name="costo_forecast_{{ costo.id_costo }}">
+                        {% endif %}
+                    </td>
+                    <td><input type="number" name="costo_real_{{ costo.id_costo }}" value="{{ costo.costo_real }}"></td>
+                    <td>{{ costo.id_costo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="justify-content-end" style="width: 50%;">
+        <button type="submit" class="btn btn-primary justify-content-end">Ingresar</button>
+    </div>
+</form>
+{% endblock %}

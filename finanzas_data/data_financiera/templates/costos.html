@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ division }} - {{ pais }} - {{ tipo_data }} - {{ mes }} - {{ anno }}
+{% endblock %}
+
+{% block content %}
+<br>
+<div style="justify-items: center;">
+    <h2>Costos</h2>
+    <h2 style="justify-self: center;">{{ division }} - {{ pais }} - {{ tipo_data }} - {{ mes }} - {{ anno }}</h2>  
+</div>
+<br>
+
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3" data-bs-spy="scroll">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Centro Costo</th>
+                    <th scope="col">Pais</th>
+                    <th scope="col">División</th>
+                    <th scope="col">Forecast</th>
+                    <th scope="col">Real</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for clientes in cliente %}
+                <tr>
+                    <input type="hidden" name="costo_mes_{{ clientes.id_cliente }}" value="{{ mes }}">
+                    <input type="hidden" name="costo_anno_{{ clientes.id_cliente }}" value="{{ anno }}">
+                    <td scope="row">{{ clientes.cliente_nombre }}</td>
+                    <input type="hidden"  name="costo_cliente_{{ clientes.id_cliente }}" value="{{ clientes.cliente_nombre}}">
+                    <td >{{ clientes.cliente_ceco }}</td>
+                    <input type="hidden" name="costo_ceco_{{ clientes.id_cliente }}" value="{{ clientes.cliente_ceco }}">
+                    <td>{{ clientes.cliente_pais }}</td>
+                    <input type="hidden" name="costo_pais_{{ clientes.id_cliente }}" value="{{ pais }}">
+                    <td>{{ clientes.cliente_division }}</td>
+                    <input type="hidden" name="costo_division_{{ clientes.id_cliente }}" value="{{ division }}">
+                    <td><input type="number" name="costo_forecast_{{ clientes.id_cliente }}"></td>
+                    <td><input type="number" name="costo_real_{{ clientes.id_cliente }}"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="justify-content-end" style="width: 50%;">
+        <button type="submit" class="btn btn-primary justify-content-end">Ingresar</button>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var selectMes = document.querySelector('select[name="costo_mes"]');
+        selectMes.addEventListener('change', function() {
+            var selectedValue = selectMes.value;
+            var hiddenInputs = document.querySelectorAll('input[name^="costo_mes_"]');
+            hiddenInputs.forEach(function(input) {
+                input.value = selectedValue;
+            });
+        });
+        var selectAnno = document.querySelector('select[name="costo_anno"]');
+        selectAnno.addEventListener('change', function() {
+            var selectedValue = selectAnno.value;
+            var hiddenInputs = document.querySelectorAll('input[name^="costo_anno_"]');
+            hiddenInputs.forEach(function(input) {
+                input.value = selectedValue;
+            });
+        });
+    });
+</script>
+
+{% endblock %}

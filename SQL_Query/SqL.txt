@@ -1,0 +1,36 @@
+Ingreso de Divisiones
+
+INSERT INTO [DB_DataFinanza].[dbo].[data_financiera_division] ([division_nombre])
+VALUES 
+    ('Workplace Services'),
+    ('Servicios de Plataformas'),
+    ('Cloud & Data Center'),
+	('Cybersecurity');
+
+Ingreso de País
+
+INSERT INTO [DB_DataFinanza].[dbo].[data_financiera_pais] ([pais_nombre])
+VALUES 
+    ('Brasil'),
+    ('Uruguay'),
+    ('Panamá'),
+	('Costa Rica'),
+	('Ecuador'),
+	('Chile'),
+	('Argentina'),
+	('México'),
+	('Colombia'),
+	('Perú'),
+	('EEUU');
+
+
+Ingreso de Clientes
+
+INSERT INTO [DB_DataFinanza].[dbo].[data_financiera_cliente] 
+    ([cliente_nombre], [cliente_division_id], [cliente_pais_id], [cliente_ceco])
+VALUES 
+    ('CLARO SERV', 1, 6, 13478),
+    ('BCI (INTERNO-GSIO)', 1, 6, 13450),
+    ('FIELD SANTANDER PPDD', 1, 6, 13709),
+    ('SANTANDER FIELD', 1, 6, 13705),
+    ('ZURICH SANTANDER FIELD', 1, 6, 17843);

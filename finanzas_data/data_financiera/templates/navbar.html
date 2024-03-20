@@ -1,0 +1,15 @@
+<nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Finanzas</a>
+        <div class="ms-auto d-inline-flex">
+            <form class="d-inline-flex" action="{% url 'agregar_cliente' %}" method="get">
+                <button type="submit" class="btn btn-outline-success">Agregar Cliente</button>
+            </form>
+            <div style="margin-left: 10px;"> <!-- Espacio entre los formularios -->
+            </div>
+            <form class="d-inline-flex" action="{% url 'home' %}" method="get">
+                <button type="submit" class="btn btn-outline-success">Volver a Inicio</button>
+            </form>
+        </div>
+    </div>
+</nav>

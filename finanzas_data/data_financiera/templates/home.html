@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Divisiones
+{% endblock %}
+
+{% block content %}
+<div>
+    <div class="container" style="width: 50%;">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <br>
+                <h2>Seleccione División</h2>
+                <select id="divisionSelect" name="divisionSelect" class="form-select form-select-lg mb-3" aria-label="Seleccione la división">
+                    <option selected disabled>Seleccione una división</option>
+                    {% for divisiones in division %}
+                    <option value="{{ divisiones.division_nombre }}">{{ divisiones.division_nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>    
+            <br>
+            <div>
+                <h2>Seleccione País</h2>  
+                <select id="paisSelect" name="paisSelect" class="form-select form-select-lg mb-3" aria-label="Seleccione Pais">
+                    <option selected>Seleccione un país</option>
+                    {% for paises in pais %}
+                    <option value="{{ paises.pais_nombre }}">{{ paises.pais_nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <div>
+                <h2>Seleccione Tipo de Data</h2>  
+                <select id="dataSelect" name="dataSelect" class="form-select form-select-lg mb-3" aria-label="Seleccione Data">
+                    <option selected disabled>Seleccione un tipo de dato</option>
+                    <option value="Ingreso">Ingreso</option>
+                    <option value="Costos">Costos</option>
+                    <option value="Gastos Operacionales">Gastos Operacionales</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <h2>Seleccione Año</h2>
+                <select id="annoSelect" name="annoSelect" class="form-select form-select-lg mb-3" aria-label="Seleccione el año">
+                    <option selected disabled>Seleccione un año</option>
+                    {% for anno in annos %}
+                        <option value="{{ anno }}">{{ anno }}</option>
+                    {% endfor %}
+                </select>
+            </div>         
+            
+            <div class="mb-3">
+                <h2>Seleccione Mes</h2>
+                <select id="mesSelect" name="mesSelect" class="form-select form-select-lg mb-3" aria-label="Seleccione el mes">
+                    <option selected disabled>Seleccione un mes</option>
+                    {% for mes in meses %}
+                    <option value="{{ mes }}">{{ mes }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="justify-content-end" style="width: 50%;">
+                <button type="submit" id="continuarBtn" class="btn btn-primary justify-content-end" href="{% url 'ingresos' %}">Continuar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

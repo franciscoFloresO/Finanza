@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ division }} - {{ pais }} - {{ tipo_data }} - {{ anno }} - {{ mes }}
+{% endblock %}
+
+{% block content %}
+<br>
+<div style="justify-items: center;">
+    <h2>Gastos Operacionales Editables</h2>
+    <h3 style="justify-self: center;">{{ division }} - {{ pais }} - {{ tipo_data }} - {{ anno }} - {{ mes }}</h3>  
+</div>
+<br>
+<form method="post" action="{% url 'gastos_operacionales_editar' %}?division={{ division }}&pais={{ pais }}&tipo_data={{ tipo_data }}&annos={{ anno }}&mes={{ mes }}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Servicio</th>
+                    <th scope="col">Centro Costo</th>
+                    <th scope="col">Pais</th>
+                    <th scope="col">División</th>
+                    <th scope="col">Forecast</th>
+                    <th scope="col">Real</th>
+                    <th scope="col">ID</th>
+                </tr> 
+            </thead>
+            <tbody>
+                {% for gas_op in gas_ops %}
+                <tr>
+                    <td scope="row">{{ gas_op.gas_op_cliente }}</td>
+                    <td>{{ gas_op.gas_op_ceco }}</td>
+                    <td>{{ gas_op.gas_op_pais }}</td>
+                    <td>{{ gas_op.gas_op_division }}</td>
+                    <td>
+                        {% if gas_op.gas_op_forecast %}
+                            {{ gas_op.gas_op_forecast }}
+                        {% else %}
+                            <input type="number" name="gas_op_forecast_{{ gas_op.id_gas_op }}">
+                        {% endif %}
+                    </td>
+                    <td><input type="number" name="gas_op_real_{{ gas_op.id_gas_op }}" value="{{ gas_op.gas_op_real }}"></td>
+                    <td>{{ gas_op.id_gas_op }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="justify-content-end" style="width: 50%;">
+        <button type="submit" class="btn btn-primary justify-content-end">Ingresar</button>
+    </div>
+</form>
+{% endblock %}
