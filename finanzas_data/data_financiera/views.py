@@ -124,8 +124,6 @@ def ingresos_editar(request, division_seleccionada=None, pais_seleccionado=None,
     division_seleccionada = request.GET.get('division')
     pais_seleccionado = request.GET.get('pais')
     tipo_data_seleccionado = request.GET.get('tipo_data')
-    print(f"Pais",pais_seleccionado)
-    print(f"DVI",division_seleccionada)
     pais_filtrado = Pais.objects.get(pais_nombre=pais_seleccionado)
     pais_filtrado_id = pais_filtrado.id_pais
     division_filtrada = Division.objects.get(division_nombre=division_seleccionada)
@@ -134,43 +132,53 @@ def ingresos_editar(request, division_seleccionada=None, pais_seleccionado=None,
     ingresos = Ingreso.objects.all()
     if request.method == 'POST':
         print('es POST')
+        cliente_bd = request.POST.get(pais_seleccionado,"")
         ingresos = Ingreso.objects.filter(ingreso_pais=pais_filtrado, ingreso_division=division_seleccionada, ingreso_mes=mes_seleccionado, ingreso_anno=anno_seleccionado)
         for key in request.POST.keys():
-            print('Key:', key)
-            if key.startswith('ingreso_real_'):
-                print('Ingresa')
-                ingreso_id = key.replace('ingreso_real_', '')
-                ingreso_real = request.POST[key]
-                ingreso = get_object_or_404(Ingreso, id_ingreso=ingreso_id)
-                ingreso.ingreso_real = ingreso_real
-                ingreso.save()
-                messages.success(request, "Editado editado correctamente...")
-                print('Cambio REALIZADO para ingreso ID', ingreso_id)
-            elif key.startswith('ingreso_cliente_'):
-                print('Ingresa forecast')
+            print('Key 1:', key)
+            
+            if key.startswith('ingreso_cliente_'):
+                print('Ingresa', key)
                 ingreso_id = key.replace('ingreso_cliente_', '')
-                ingreso_forecast = request.POST[key]
-                if ingreso_forecast.strip():
-                    cliente_nombre = ingreso_forecast.strip()  # Cliente que se utilizará para guardar el forecast
-                    # Buscar si el cliente ya existe en la base de datos de ingresos
+                print(f'ingreso id ',ingreso_id)
+                ingreso_real = request.POST[key]
+                print(f'ingreso REal',ingreso_real)
+                if ingreso_real.strip():
+                    cliente_nombre = ingreso_real.strip()
+                    print('cliente, ', cliente_nombre)
+
                     ingreso_existente = Ingreso.objects.filter(ingreso_cliente=cliente_nombre).exists()
-                    if not ingreso_existente:  # Si el cliente no está registrado en la tabla de ingresos, crear un nuevo ingreso con los datos del cliente
+                    print(f'cliente ',cliente_nombre)
+
+                    if not ingreso_existente:
+                        print('Ingreso no existente, agregando información...')
+                        cliente_id = key.split('_')[-1]
+                        ingreso_mes = request.POST.get(f'ingreso_mes_{cliente_id}', '')
+                        print (ingreso_mes)
+                        ingreso_forecast = request.POST.get(f"ingreso_forecast_{cliente_id}", "")
+                        #ingreso_real = request.POST.get(f"ingreso_real_{cliente_id}", "")
+                        # Crear un nuevo ingreso para este cliente
                         nuevo_ingreso = Ingreso.objects.create(
-                            ingreso_cliente=cliente_nombre,
-                            ingreso_pais=pais_filtrado,
-                            ingreso_division=division_seleccionada,
-                            ingreso_mes=mes_seleccionado,
-                            ingreso_anno=anno_seleccionado,
-                            ingreso_forecast=ingreso_forecast
+                            ingreso_pais=request.POST.get(f'ingreso_pais_{cliente_id}', ''),
+                            ingreso_ceco=request.POST.get(f'ingreso_ceco_{cliente_id}', ''),
+                            ingreso_cliente=request.POST.get(f'ingreso_cliente_{cliente_id}', ''),
+                            ingreso_division=request.POST.get(f'ingreso_division_{cliente_id}', ''),
+                            ingreso_mes=request.POST.get(f'ingreso_mes_{cliente_id}', ''),
+                            ingreso_anno=request.POST.get(f'ingreso_anno_{cliente_id}', ''),
+                            ingreso_forecast=ingreso_forecast,
+                            ingreso_real=request.POST.get(f'ingreso_real_{cliente_id}','')
                         )
-                        messages.success(request, "Nuevo cliente ingresado y editado correctamente...")
-                        print('Nuevo cliente ingresado y editado correctamente...')
-                    else:  # Si el cliente ya está registrado, simplemente actualizar el forecast
+                        messages.success(request, "Nuevo ingreso agregado correctamente...")
+                        print('Nuevo ingreso agregado correctamente...')
+                    else:
+                        print('ingresa en el ELSE')
+                        cliente_id = key.split('_')[-1]
+                        #ingreso_real = request.POST.get(f"ingreso_real_{cliente_id}", "")
                         ingreso = get_object_or_404(Ingreso, id_ingreso=ingreso_id)
-                        ingreso.ingreso_forecast = ingreso_forecast
+                        ingreso.ingreso_real = request.POST.get(f"ingreso_real_{cliente_id}", "")
                         ingreso.save()
                         messages.success(request, "Editado editado correctamente...")
-                        print('Cambio KEY para ingreso ID', ingreso_id)
+                        print('Cambio REALIZADO para ingreso ID', ingreso_id)
         return render(request, 'ingresos_editar.html', {'division': division_seleccionada, 'pais': pais_seleccionado, 'tipo_data': tipo_data_seleccionado, 'mes': mes_seleccionado, 'anno': anno_seleccionado, 'cliente': cliente, 'ingresos': ingresos})
     else:
         mes_seleccionado = request.GET.get('mes')
